@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>CovidFlask - Veja as informações do covid, e algumas funções adicionais.</title>
+
+    <!-- Bootstrap -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+ <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <link rel="icon"
+      type="image/png"
+      href="https://image.flaticon.com/icons/png/512/2813/2813238.png">
+    <![endif]-->
+  </head>
+  <style>
+    #cases{
+      color: firebrick;
+    }
+    #deaths{
+      color: red;
+    }
+    #recovered{
+      color: green;
+    }
+    #country_cases{
+      color: firebrick;
+    }
+    #country_deaths{
+      color: red;
+    }
+    #country_recovered{
+      color: green;
+    }
+    .section_one{
+      margin-top: 5%
+    }
+    .section_two{
+      background-color: #F5F8FB;
+      margin-top: 5%;
+      padding-top: 50px;
+      padding-bottom: 50px;
+    }
+    *{font-family: 'Open Sans', sans-serif;}
+  </style>
+  <body>
+  <!-- START OF NAVBAR -->
+  <div class="text-light" style="background-color: #212121;padding-top: 10px;padding-bottom: 10px;">
+      <center>
+         <a href="#" style="text-decoration: none; color: white;"class="text-center">
+           <img style="width: 50px;" src="https://covid-19-apis.postman.com/static/covid19-image-2-0e295f09eccf0fa3f4778159cd065f5d.png">
+           <br>
+           <h3>CovidFlask</h3>
+         </a>
+      </center>
+  </div>
+  <div class="text-light" style="background-color: #F5F8FB;padding-top: 10px;padding-bottom: 10px;">
+      <center>
+         <a href="/share" style="text-decoration: none;display: inline-block;margin-left: 10px;margin-right: 50px;" class="btn btn-dark text-center text-light">
+           <h5>Compartilhe seus sentimentos</h5>
+         </a>
+         <a href="/stay" style="text-decoration: none;display: inline-block;margin-left: 10px;margin-right: 20px;" class="btn btn-dark text-center text-light">
+           <h5>Fique em casa</h5>
+         </a>
+         <a href="/support" style="text-decoration: none;display: inline-block;margin-left: 50px;margin-right: 20px;" class="btn btn-dark text-center text-light">
+           <h5>Ajude a combater o covid</h5>
+         </a>
+
+      </center>
+  </div>
+  <!-- END OF NAVBAR -->
+    <div class="container section_one">
+        <center>
+          <div class="row">
+            <div class="col-md-4">
+              <h2>Casos: <span id="cases">0</span></h2>
+            </div>
+            <div class="col-md-4">
+              <h2>Mortes: <span id="deaths">0</span></h2>
+            </div>
+            <div class="col-md-4">
+              <h2>Recuperado: <span id="recovered">0</span></h2>
+            </div>
+          </div>
+        </center>
+    </div>
+
+    <div class="section_two">
+      <div class="container">
+        <center>
+          <h3>Veja as informações do covid no seu país</h3>
+          <br>
+          <input placeholder="País" class="form-control" style="width: 500px;display: inline-block;border-radius: 0px;" id="country">
+          <button class="btn btn-primary" style="display: inline-block;border-radius: 0px;margin-left: -5px;margin-top: -5px;" id="search">Buscar</button>
+          <br><br><br><br>
+
+          <div id="country_data" style="display: none;">
+
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Ativo</th>
+                  <th scope="col">Casos</th>
+                  <th scope="col">Críticos</th>
+                  <th scope="col">Mortes</th>
+                  <th scope="col">Recuperados</th>
+                  <th scope="col">Casos Hoje</th>
+                  <th scope="col">Mortes Hoje</th>
+                  <th scope="col">Testes Hoje</th>
+                </tr>
+              </thead>
+              <tbody style="background-color: white;">
+                <tr>
+                  <td id="c1"></td>
+                  <td id="c2"></td>
+                  <td id="c3"></td>
+                  <td id="c4"></td>
+                  <td id="c5"></td>
+                  <td id="c6"></td>
+                  <td id="c7"></td>
+                  <td id="c8"></td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+
+            <button class="btn btn-danger" id="close">Fechar</button>
+
+          </div>
+        </center>
+      </div>
+    </div>
+  <br>
+  <center>
+      <br><br><br>
+      <h1>Informações do Covid em Portugal</h1>
+      <br>
+      <canvas id="chart" width="600" height="400"></canvas>
+  </center>
+    <script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+   <script>
+      let cases = {{ globalData.cases }};
+      let deaths = {{ globalData.deaths }};
+      let recovered = {{ globalData.recovered }};
+      var nf = Intl.NumberFormat();
+      document.getElementById('cases').innerHTML = nf.format(cases);
+      document.getElementById('deaths').innerHTML = nf.format(deaths);
+      document.getElementById('recovered').innerHTML = nf.format(recovered);
+      let search = document.getElementById('search');
+      let close = document.getElementById('close');
+      close.addEventListener('click', () => {
+        $("#country_data").fadeOut();
+      });
+      search.addEventListener('click', () => {
+        let countryInput = document.getElementById('country');
+        if(countryInput.value.length <= 0){
+         swal("Opss!", "Type a country first!", "error");
+        }else{
+          let jsonDataCountry = JSON.parse('{{ countriesData | tojson | safe }}');
+          const filter = jsonDataCountry.filter((country) => country.country.toLowerCase() == countryInput.value.toLowerCase());
+          if(filter.length <= 0){
+            swal("Opss!", "This country does not exists!", "error");
+          }else{
+            $("#country_data").fadeIn();
+            console.log(filter[0])
+            document.getElementById('c1').innerHTML = filter[0].active;
+            document.getElementById('c2').innerHTML = filter[0].cases;
+            document.getElementById('c3').innerHTML = filter[0].critical;
+            document.getElementById('c4').innerHTML = filter[0].deaths;
+            document.getElementById('c5').innerHTML = filter[0].recovered;
+            document.getElementById('c6').innerHTML = filter[0].todayCases;
+            document.getElementById('c7').innerHTML = filter[0].todayDeaths;
+            document.getElementById('c8').innerHTML = filter[0].totalTests;
+          }
+        }
+      });
+
+    </script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+   <script>
+
+      var barData = {
+        labels : [
+          {% for item in labels %}
+           "{{ item }}",
+          {% endfor %}
+	],
+
+        datasets : [{
+          fillColor: "rgba(151,187,205,0.2)",
+          strokeColor: "rgba(151,187,205,1)",
+          pointColor: "rgba(151,187,205,1)",
+          data : []
+          }
+        ]
+      }
+        let a = 2;
+        let array = [];
+        {% for item in values %}
+               array.push({{ item | tojson | safe }})
+         {% endfor %}
+        array.forEach((element) => {
+            for(var propName in element) {
+                if(element.hasOwnProperty(propName)) {
+                    var propValue = element[propName];
+                    barData.datasets[0].data.push(propValue);
+                }
+            }
+        })
+
+     // get bar chart canvas
+     var mychart = document.getElementById("chart").getContext("2d");
+
+       steps = 10
+       max = 35000
+
+     // draw bar chart
+     new Chart(mychart).Bar(barData, {
+       scaleOverride: true,
+       scaleSteps: steps,
+       scaleStepWidth: Math.ceil(max / steps),
+       scaleStartValue: 0,
+       scaleShowVerticalLines: true,
+       scaleShowGridLines : true,
+       barShowStroke : true,
+       scaleShowLabels: true
+       }
+     );
+
+    </script>
+  </body>
+</html>

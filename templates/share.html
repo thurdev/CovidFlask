@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>CovidFlask - Veja as informações do covid, e algumas funções adicionais.</title>
+
+    <!-- Bootstrap -->
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      <link rel="icon"
+      type="image/png"
+      href="https://image.flaticon.com/icons/png/512/2813/2813238.png">
+    <![endif]-->
+  </head>
+  <style>
+      *{font-family: 'Open Sans', sans-serif;}
+  </style>
+  <style>
+    #cases{
+      color: firebrick;
+    }
+    #deaths{
+      color: red;
+    }
+    #recovered{
+      color: green;
+    }
+    #country_cases{
+      color: firebrick;
+    }
+    #country_deaths{
+      color: red;
+    }
+    #country_recovered{
+      color: green;
+    }
+    .section_one{
+      margin-top: 5%
+    }
+    .section_two{
+      background-color: #F5F8FB;
+      margin-top: 5%;
+      padding-top: 50px;
+      padding-bottom: 50px;
+    }
+  </style>
+  <body>
+  <!-- START OF NAVBAR -->
+  <div class="text-light" style="background-color: #212121;padding-top: 10px;padding-bottom: 10px;">
+      <center>
+         <a href="/" style="text-decoration: none; color: white;"class="text-center">
+           <img style="width: 50px;" src="https://covid-19-apis.postman.com/static/covid19-image-2-0e295f09eccf0fa3f4778159cd065f5d.png">
+           <br>
+           <h3>CovidFlask</h3>
+         </a>
+      </center>
+  </div>
+  <div class="text-light" style="background-color: #F5F8FB;padding-top: 10px;padding-bottom: 10px;">
+      <center>
+         <a href="#" style="text-decoration: none;display: inline-block;margin-left: 10px;margin-right: 50px;" class="btn btn-dark text-center text-light">
+           <h5>Compartilhe seus sentimentos</h5>
+         </a>
+         <a href="/stay" style="text-decoration: none;display: inline-block;margin-left: 10px;margin-right: 20px;" class="btn btn-dark text-center text-light">
+           <h5>Fique em casa</h5>
+         </a>
+         <a href="/support" style="text-decoration: none;display: inline-block;margin-left: 50px;margin-right: 20px;" class="btn btn-dark text-center text-light">
+           <h5>Ajude a combater o covid</h5>
+         </a>
+
+      </center>
+  </div>
+  <br><br><br>
+  <div class="row justify-content-md-center">
+    <div class="col col-lg-6" style="box-shadow: 5px 10px 8px #888888;border: 1px solid #ccc;border-radius: 2px; padding-top: 15px;padding-bottom: 15px;overflow: scroll;
+    height: 600px;">
+      <div class="container">
+          {% for item in posts %}
+          <div style="border: 1px solid #000;margin-top: 5px; margin-bottom: 5px;">
+              <h5 style="font-weight: bolder;margin-left: 15px;margin-top: 15px;">{{ item[1] }}</h5>
+              <p style="float:right;margin-right: 15px;">{{ item[3] }} - {{ item[4] }}</p>
+              <br>
+              <br>
+              <p style="margin-left: 15px;">{{ item[2] }}</p>
+              <br>
+              <br>
+          </div>
+          {% endfor %}
+      </div>
+    </div>
+      <div class="col col-lg-2" style="margin-left: 15px;box-shadow: 5px 10px 8px #888888;border: 1px solid #ccc;border-radius: 2px; padding-top: 15px;padding-bottom: 15px;">
+      <form action="{{ url_for('handle_data') }}" method="POST" onsubmit="return toSubmit(event)">
+        <label for="user">Utilizador</label>
+        <input type="text" placeholder="" name="user" id="user" class="form-control">
+          <input type="hidden" name="type" value="need_to_hame_something_in_there" id="type">
+        <br>
+        <br>
+        <div class="form-group">
+    <label for="textarea">Comentário</label>
+    <textarea class="form-control" id="textarea" name="comment" rows="3"></textarea>
+            <br>
+            <input type="checkbox" name="anon" value="anon" id="anon">
+            <label>Post as a Anonymous</label>
+            <br><br>
+            <input type="submit" class="btn btn-primary btn-block" value="Enviar" id="submit">
+        </div>
+          </form>
+  </div>
+    </div>
+  </div>
+  <!-- END OF NAVBAR -->
+    <script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+        $('#anon').click(() => {
+            if($('#anon').is(":checked")){
+                document.getElementById("user").disabled = true;
+                document.getElementById("type").value = "anon";
+            }else{
+                document.getElementById("user").disabled = false;
+                document.getElementById("type").value = "anyothershit";
+            }
+        });
+        function toSubmit(e){
+              if($('#anon').is(":checked")){
+                  e.submit();
+              }else{
+                    let user = document.getElementById("user");
+                    if(user.value.length <= 0){
+                        e.preventDefault();
+                        swal("Opss!", "Introduza um utilizador para postar, ou poste como anônimo", "error");
+                    }else{
+                        e.submit();
+                    }
+                }
+              return false;
+        }
+        $("#submit").click((event) => {
+            if($('#anon').is(":checked")){
+
+            }else{
+                let user = document.getElementById("user");
+                if(user.length <= 0){
+                    event.preventDefault()
+                }else{
+                    swal("Opss!", "Introduza um utilizador para postar, ou poste como anônimo", "error");
+                }
+            }
+        })
+
+    </script>
+  </body>
+</html>
